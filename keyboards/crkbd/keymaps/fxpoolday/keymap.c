@@ -18,7 +18,9 @@ enum custom_keycodes {
     ZOOM_0,
     PASTE,
     COPY,
-    SCREENSHOT
+    SCREENSHOT,
+    MOVE_SCREEN_LEFT,
+    MOVE_SCREEN_RIGHT
 };
 
 #define KC_OPT_ESC LOPT_T(KC_ESC)
@@ -31,16 +33,23 @@ enum custom_keycodes {
 const uint16_t PROGMEM vb_combo[] = {KC_V, KC_B, COMBO_END};
 const uint16_t PROGMEM cv_combo[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM zx_combo[] = {KC_Z, KC_X, COMBO_END};
-const uint16_t PROGMEM df_combo[] = {KC_F, KC_D, COMBO_END};
+const uint16_t PROGMEM df_combo[] = {KC_D, KC_F, COMBO_END};
 const uint16_t PROGMEM as_combo[] = {KC_A, KC_S, COMBO_END};
-
+const uint16_t PROGMEM hj_combo[] = {KC_H, KC_J, COMBO_END};
+const uint16_t PROGMEM jkl_combo[] = {KC_J, KC_K, KC_L, COMBO_END};
+const uint16_t PROGMEM sdf_combo[] = {KC_S, KC_D, KC_F, COMBO_END};
+const uint16_t PROGMEM yu_combo[] = {KC_Y, KC_U, COMBO_END};
+const uint16_t PROGMEM rt_combo[] = {KC_R, KC_T, COMBO_END};
+const uint16_t PROGMEM dotcom_combo[] = {KC_COMM, KC_DOT, COMBO_END};
 combo_t key_combos[] = {
-  // COMBO(jk_combo, KC_5),
   COMBO(vb_combo, LCMD(KC_V)),
   COMBO(cv_combo, LCMD(KC_C)),
   COMBO(zx_combo, LCMD(KC_Z)),
   COMBO(as_combo, SCREENSHOT),
-
+  COMBO(hj_combo, LCTL(KC_ENT)),
+  COMBO(jkl_combo, MOVE_SCREEN_RIGHT),
+  COMBO(sdf_combo, MOVE_SCREEN_LEFT),
+  COMBO(dotcom_combo, KC_UNDS),
 };
 
 
@@ -72,11 +81,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_NAVIGATION] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_U, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+     XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_U, XXXXXXX, ZOOM_0,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_OPT_ESC, KC_NO, KC_MS_L, KC_MS_D, KC_MS_R, ZOOM_P,                       KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT, KC_HOME, KC_END,
+     KC_OPT_ESC, KC_NO, KC_MS_L, KC_MS_D, KC_MS_R, ZOOM_M,                       KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT, KC_HOME, KC_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_LSFT, XXXXXXX, XXXXXXX, KC_BTN2, KC_BTN1, ZOOM_M,                     XXXXXXX, XXXXXXX, KC_COMM, KC_DOT, XXXXXXX, XXXXXXX,
+     KC_LSFT, XXXXXXX, XXXXXXX, KC_BTN2, KC_BTN1, ZOOM_P,                     XXXXXXX, XXXXXXX, KC_COMM, KC_DOT, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LCMD, KC_LCTL, XXXXXXX,     XXXXXXX,  _______, XXXXXXX
                                       //`--------------------------'  `--------------------------'
@@ -181,6 +190,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case SCREENSHOT:
             if (record->event.pressed) {
                 SEND_STRING(SS_LCTL(SS_LSFT("s")));
+            }
+            return false;
+        case MOVE_SCREEN_LEFT:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_LEFT))));
+            }
+            return false;
+        case MOVE_SCREEN_RIGHT:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_RIGHT))));
             }
             return false;
     }
